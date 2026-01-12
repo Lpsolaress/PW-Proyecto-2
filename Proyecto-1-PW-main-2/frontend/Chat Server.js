@@ -7,14 +7,21 @@ const dotenv = require('dotenv');
 const http = require('http');
 const { Server } = require("socket.io");
 const jwt = require('jsonwebtoken');
+const { createHandler } = require('graphql-http/lib/use/express');
 
 // Cargar variables de entorno (buscar .env en el directorio actual)
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 // Importar rutas y modelos
-const authRoutes = require('./routes/auth');
-const productosRoutes = require('./routes/productos');
-const Usuario = require('./models/Usuario');
+const authRoutes = require('../backend/routes/auth');
+const productosRoutes = require('../backend/routes/productos');
+const usersRoutes = require('../backend/routes/users');
+const ordersRoutes = require('../backend/routes/orders');
+const Usuario = require('../backend/models/Usuario');
+
+// Importar GraphQL schema y resolvers
+const schema = require('../backend/graphql/schema');
+const resolvers = require('../backend/graphql/resolvers');
 
 // Definir modelo de Mensaje inline
 const mensajeSchema = new mongoose.Schema({
@@ -45,6 +52,34 @@ app.use(morgan('combined'));
 // Rutas de API
 app.use('/auth', authRoutes);
 app.use('/productos', productosRoutes);
+app.use('/users', usersRoutes);
+app.use('/orders', ordersRoutes);
+
+// GraphQL endpoint with authentication context
+app.use('/graphql', async (req, res, next) => {
+  // Try to get user from token for GraphQL context
+  let user = null;
+  const authHeader = req.headers.authorization;
+  
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    try {
+      const token = authHeader.substring(7);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      user = { id: decoded.id };
+    } catch (err) {
+      // Token invalid or expired, continue without user
+    }
+  }
+  
+  // Create GraphQL handler with context
+  const handler = createHandler({
+    schema,
+    rootValue: resolvers,
+    context: { user }
+  });
+  
+  handler(req, res);
+});
 
 // Servir archivos estáticos
 app.use(express.static(__dirname));
