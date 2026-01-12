@@ -43,8 +43,13 @@ function configurarInterfazSegunRol() {
         (${usuarioActual.role === 'administrador' ? 'Administrador' : 'Usuario'})
       </span>
     </div>
-    <div>
-      <a href="Chat.html" style="margin-right: 15px; color: #4CAF50; text-decoration: none;">💬 Ir al Chat</a>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <a href="cart.html" style="color: #4CAF50; text-decoration: none; font-size: 24px; position: relative;">
+        🛒
+        <span id="cart-badge" class="cart-badge" style="position: absolute; top: -8px; right: -8px; background: #f44336; color: white; border-radius: 50%; width: 20px; height: 20px; display: none; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">0</span>
+      </a>
+      ${usuarioActual.role === 'administrador' ? '<a href="admin.html" style="color: #4CAF50; text-decoration: none;">👨‍💼 Admin</a>' : '<a href="user-profile.html" style="color: #4CAF50; text-decoration: none;">👤 Perfil</a>'}
+      <a href="Chat.html" style="color: #4CAF50; text-decoration: none;">💬 Chat</a>
       <button id="btn-logout" style="padding: 8px 15px; background: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
         Cerrar Sesión
       </button>
@@ -148,6 +153,7 @@ function renderProductos() {
       <td><input type="text" value="${p.descripcion}" data-id="${p._id}" data-field="descripcion" disabled></td>
       <td>
         <button class="btn-ver-detalle" onclick="verDetalle('${p._id}')">Ver detalles</button>
+        <button class="btn-add-cart" onclick="addProductToCart('${p._id}')" style="background: #4CAF50; color: white; padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 14px; margin-right: 5px;">🛒 Añadir</button>
         ${esAdmin ? `
           <button class="edit-btn" onclick="editarProducto('${p._id}')">Editar</button>
           <button class="save-btn" onclick="guardarProducto('${p._id}')" style="display:none">Guardar</button>
@@ -333,4 +339,16 @@ window.onclick = function(event) {
   if (event.target === modal) {
     cerrarModal();
   }
+}
+
+// Función para añadir producto al carrito
+function addProductToCart(id) {
+  const producto = productos.find(p => p._id === id);
+  if (!producto) {
+    mostrarMensaje("Producto no encontrado", "error");
+    return;
+  }
+  
+  addToCart(producto);
+  mostrarMensaje(`${producto.nombre} añadido al carrito`, "ok");
 }

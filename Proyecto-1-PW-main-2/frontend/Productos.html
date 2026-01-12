@@ -6,6 +6,35 @@
   <title>Gestión de Productos</title>
   <link rel="stylesheet" href="styles.css">
   <style>
+    /* Cart badge */
+    .cart-icon {
+      position: relative;
+      display: inline-block;
+      margin-left: 15px;
+    }
+
+    .cart-icon a {
+      color: #4CAF50;
+      text-decoration: none;
+      font-size: 24px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #f44336;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
     /* Modal de detalles */
     .modal {
       display: none;
@@ -188,6 +217,7 @@
     </div>
   </div>
 
+  <script src="cart.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

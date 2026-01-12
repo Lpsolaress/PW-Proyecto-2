@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .cart-container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .cart-header h1 {
+      margin: 0;
+    }
+
+    .cart-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 2fr 3fr 1fr;
+      gap: 20px;
+      padding: 20px;
+      margin-bottom: 15px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      align-items: center;
+    }
+
+    .cart-item-info h3 {
+      margin: 0 0 10px 0;
+      color: #333;
+    }
+
+    .cart-item-price {
+      color: #666;
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .cart-item-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .btn-quantity {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .btn-quantity:hover {
+      background: #f5f5f5;
+      border-color: #4CAF50;
+    }
+
+    .quantity-input {
+      width: 60px;
+      height: 30px;
+      text-align: center;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .btn-remove {
+      padding: 8px 12px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .btn-remove:hover {
+      background: #d32f2f;
+    }
+
+    .cart-item-total {
+      text-align: right;
+      font-size: 18px;
+      color: #4CAF50;
+    }
+
+    .cart-summary {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-top: 30px;
+    }
+
+    .cart-summary h2 {
+      margin-top: 0;
+      color: #333;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 15px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      font-size: 16px;
+    }
+
+    .summary-row.total {
+      font-size: 24px;
+      font-weight: bold;
+      color: #4CAF50;
+      border-top: 2px solid #eee;
+      margin-top: 10px;
+      padding-top: 20px;
+    }
+
+    .btn-checkout {
+      width: 100%;
+      padding: 15px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+
+    .btn-checkout:hover {
+      background: #45a049;
+    }
+
+    .btn-checkout:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .empty-cart-message {
+      text-align: center;
+      padding: 60px 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .empty-cart-message h2 {
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    .empty-cart-message p {
+      color: #999;
+      margin-bottom: 30px;
+    }
+
+    .btn-continue-shopping {
+      padding: 12px 30px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      display: inline-block;
+      transition: background 0.3s;
+    }
+
+    .btn-continue-shopping:hover {
+      background: #45a049;
+    }
+
+    .btn-clear-cart {
+      padding: 8px 15px;
+      background: #ff9800;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-clear-cart:hover {
+      background: #f57c00;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideOut {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+    }
+
+    .user-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-links a {
+      color: #4CAF50;
+      text-decoration: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: background 0.3s;
+    }
+
+    .nav-links a:hover {
+      background: #e8f5e9;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="cart-container">
+      <div class="cart-header">
+        <h1>🛒 Carrito de Compras</h1>
+        <div class="cart-actions">
+          <a href="Productos.html" class="btn-continue-shopping">← Seguir Comprando</a>
+          <button class="btn-clear-cart" onclick="clearCartAndRefresh()">Vaciar Carrito</button>
+        </div>
+      </div>
+
+      <div id="empty-cart-message" class="empty-cart-message" style="display: none;">
+        <h2>Tu carrito está vacío</h2>
+        <p>¡Añade algunos productos para comenzar!</p>
+        <a href="Productos.html" class="btn-continue-shopping">Ir a Productos</a>
+      </div>
+
+      <div id="cart-items"></div>
+
+      <div id="cart-summary" class="cart-summary" style="display: none;">
+        <h2>Resumen del Pedido</h2>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span id="cart-total">$0.00</span>
+        </div>
+        <button class="btn-checkout" id="btn-checkout" onclick="checkout()">
+          Finalizar Compra
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="cart.js"></script>
+  <script>
+    function clearCartAndRefresh() {
+      if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
+        clearCart();
+        renderCartItems();
+      }
+    }
+
+    // Verificar autenticación
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const usuario = localStorage.getItem('usuario');
+      
+      if (!token || !usuario) {
+        const container = document.querySelector('.container');
+        const warning = document.createElement('div');
+        warning.style.cssText = 'background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; margin-bottom: 20px; text-align: center;';
+        warning.innerHTML = '<strong>Nota:</strong> Debes iniciar sesión para completar la compra. <a href="auth.html" style="color: #4CAF50;">Ir a Login</a>';
+        container.insertBefore(warning, container.firstChild);
+      } else {
+        const usuarioData = JSON.parse(usuario);
+        const userBar = document.createElement('div');
+        userBar.className = 'user-bar';
+        userBar.innerHTML = `
+          <div>
+            <strong>Bienvenido:</strong> ${usuarioData.username}
+            <span style="color: ${usuarioData.role === 'administrador' ? '#4CAF50' : '#666'}; font-weight: bold;">
+              (${usuarioData.role === 'administrador' ? 'Administrador' : 'Usuario'})
+            </span>
+          </div>
+          <div class="nav-links">
+            <a href="Productos.html">Productos</a>
+            <a href="user-profile.html">Mi Perfil</a>
+            ${usuarioData.role === 'administrador' ? '<a href="admin.html">Panel Admin</a>' : ''}
+            <a href="Chat.html">💬 Chat</a>
+          </div>
+        `;
+        const container = document.querySelector('.container');
+        container.insertBefore(userBar, container.firstChild);
+      }
+    });
+  </script>
+</body>
+</html>
