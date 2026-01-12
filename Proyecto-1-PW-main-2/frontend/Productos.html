@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Productos</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Modal de detalles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      overflow: auto;
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      animation: slideDown 0.3s;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #333;
+    }
+
+    .close {
+      color: #aaa;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #000;
+    }
+
+    .detalle-info {
+      display: grid;
+      gap: 15px;
+    }
+
+    .info-item {
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      border-left: 4px solid #4CAF50;
+    }
+
+    .info-item label {
+      display: block;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 5px;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .info-item .valor {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .info-item .precio {
+      font-size: 24px;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+
+    .btn-ver-detalle {
+      background: #2196F3;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-right: 5px;
+    }
+
+    .btn-ver-detalle:hover {
+      background: #0b7dda;
+    }
+
+    .metadata {
+      margin-top: 20px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+      font-size: 12px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Gestión de Productos</h1>
+
+    <h2>Lista de productos</h2>
+
+    <div class="controls">
+      <input type="text" id="busqueda" placeholder="Buscar producto...">
+      <button id="btn-cargar">Cargar productos</button>
+    </div>
+
+    <div id="spinner" class="spinner" style="display:none"></div>
+
+    <table id="tabla-productos">
+      <thead>
+        <tr>
+          <th data-field="nombre">Nombre ⬍</th>
+          <th data-field="precio">Precio ⬍</th>
+          <th data-field="descripcion">Descripción ⬍</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="paginacion" class="paginacion"></div>
+
+    <h2>Añadir producto</h2>
+    <form id="form-producto">
+      <input type="text" id="nombre" placeholder="Nombre" required>
+      <input type="number" id="precio" placeholder="Precio" required step="0.01">
+      <input type="text" id="descripcion" placeholder="Descripción" required>
+      <input type="submit" value="Guardar">
+    </form>
+
+    <div id="mensaje" class="mensaje"></div>
+  </div>
+
+  <!-- Modal de detalles del producto -->
+  <div id="modal-detalle" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Detalles del Producto</h2>
+        <span class="close" onclick="cerrarModal()">&times;</span>
+      </div>
+      <div class="detalle-info">
+        <div class="info-item">
+          <label>Nombre</label>
+          <div class="valor" id="modal-nombre">-</div>
+        </div>
+        <div class="info-item">
+          <label>Precio</label>
+          <div class="precio" id="modal-precio">$0.00</div>
+        </div>
+        <div class="info-item">
+          <label>Descripción</label>
+          <div class="valor" id="modal-descripcion">-</div>
+        </div>
+        <div class="info-item">
+          <label>ID</label>
+          <div class="valor" id="modal-id" style="font-family: monospace; font-size: 14px;">-</div>
+        </div>
+      </div>
+      <div class="metadata">
+        <div><strong>Creado:</strong> <span id="modal-creado">-</span></div>
+        <div><strong>Actualizado:</strong> <span id="modal-actualizado">-</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
